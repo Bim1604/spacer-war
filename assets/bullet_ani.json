@@ -1,0 +1,52 @@
+{"frames": {
+
+"Bullet (1).png":
+{
+	"frame": {"x":0,"y":0,"w":110,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":115},
+	"sourceSize": {"w":110,"h":115}
+},
+"Bullet (2).png":
+{
+	"frame": {"x":110,"y":0,"w":110,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":115},
+	"sourceSize": {"w":110,"h":115}
+},
+"Bullet (3).png":
+{
+	"frame": {"x":220,"y":0,"w":110,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":115},
+	"sourceSize": {"w":110,"h":115}
+},
+"Bullet (4).png":
+{
+	"frame": {"x":330,"y":0,"w":110,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":115},
+	"sourceSize": {"w":110,"h":115}
+},
+"Bullet (5).png":
+{
+	"frame": {"x":440,"y":0,"w":110,"h":115},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":115},
+	"sourceSize": {"w":110,"h":115}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bullet.png",
+	"format": "RGBA8888",
+	"size": {"w":550,"h":115},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ee6c3483eee3474e40508ad614bca920:890dbc7b5e62e0a27964c1e529a30f61:ce0aeb6b1dd09bd42d31ec6c01e81ef2$"
+}
+}
