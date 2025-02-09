@@ -26,7 +26,6 @@ class EnemyManager extends Component with HasGameRef<SpacerGame>{
     Vector2 initialSize = Vector2(64, 64);
     Vector2 position = Vector2(game.fixedResolution.x, random.nextDouble() * game.fixedResolution.y);
     position.clamp(Vector2.zero(), Vector2(game.fixedResolution.x * 6, game.fixedResolution.y * 12));
-    // position.clamp(Vector2.zero(), Vector2(game.size.x * 6, game.size.y * 12));
     if (gameRef.buildContext != null) {
       int currentScore = Provider.of<PlayerData>(gameRef.buildContext!, listen: false).currentScore;
       int maxLevel = mapScoreToMaxEnemyLevel(currentScore);

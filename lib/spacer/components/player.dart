@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:spacer_shooter/spacer/assets/assets_spacer.dart';
@@ -32,6 +33,10 @@ class Player extends SpriteAnimationComponent with HasGameRef<SpacerGame>, Keybo
   int get score => tempScore;
   bool _shootMultipleBullets = false;
   late Timer _powerUpTimer;
+  ColorEffect? colorEffect;
+  double durationActionSkill = .75; /// second
+  bool _skilling = false;
+  Bullet? bullet;
 
   Vector2 getRandomVector() {
     return (Vector2.random(random) - Vector2(0.5, -1)) * 200;
@@ -89,11 +94,9 @@ class Player extends SpriteAnimationComponent with HasGameRef<SpacerGame>, Keybo
       animation = animationOriginal;
     }
     gameRef.add(particleComponent);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
+    if (bullet != null && _skilling) {
+      bullet!.position = game.player.position.clone()..x += 31 ..y += 4;
+    }
   }
 
   @override
@@ -151,6 +154,7 @@ class Player extends SpriteAnimationComponent with HasGameRef<SpacerGame>, Keybo
   }
 
   void skillAction(String path) async {
+    _skilling = true;
     String animation = "";
     String animationJson = "";
     double? angle;
@@ -161,22 +165,37 @@ class Player extends SpriteAnimationComponent with HasGameRef<SpacerGame>, Keybo
       angle = 0.0;
       width = game.fixedResolution.x;
     }
-    SpriteAnimation bulletAnimation = await AppUtils().getSpriteAnimation(animation, animationJson);
-    Bullet bullet = Bullet(
-      speed: 1000,
-      position: game.player.position.clone(),
-      size : Vector2(width, 60),
-      animation: bulletAnimation,
-      level: spaceship.level,
-      angleRote: angle,
-      isLaser: true
+    colorEffect = ColorEffect(
+      const  Color(0xFF00FF00),
+      EffectController(duration: durationActionSkill),
+      opacityFrom: 0.0,
+      opacityTo: 1,
+      onComplete: () async {
+        colorEffect?.apply(0);
+        colorEffect?.removeFromParent();
+        SpriteAnimation bulletAnimation = await AppUtils().getSpriteAnimation(animation, animationJson);
+        int durationSkill = 3;
+        bullet = Bullet(
+            speed: 1000,
+            position: game.player.position.clone()..x += 31 ..y += 4,
+            size : Vector2(width, 60),
+            animation: bulletAnimation,
+            level: spaceship.level,
+            angleRote: angle,
+            isLaser: true,
+            durationSkill: durationSkill,
+        );
+        bullet?.anchor = Anchor.centerLeft;
+        gameRef.add(bullet!);
+        gameRef.addCommand(Command<AudioPlayerComponent>(action: (audio) {
+          audio.playSfx(AssetsSpacer.soundLaserSmall);
+        }));
+        Future.delayed(Duration(seconds: durationSkill), (){
+          _skilling = false;
+        });
+      }
     );
-    // Anchor it to center and add to game world.
-    bullet.anchor = Anchor.centerLeft;
-    gameRef.add(bullet);
-    gameRef.addCommand(Command<AudioPlayerComponent>(action: (audio) {
-      audio.playSfx(AssetsSpacer.soundLaserSmall);
-    }));
+    add(colorEffect!);
   }
 
   @override

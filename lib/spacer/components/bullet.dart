@@ -10,6 +10,9 @@ class Bullet extends SpriteAnimationComponent with CollisionCallbacks {
   final int level;
   final double? angleRote;
   final bool isLaser;
+  int laserHealth;
+  Timer? timer;
+  int durationSkill;
 
   Bullet({
     required this.speed,
@@ -18,26 +21,45 @@ class Bullet extends SpriteAnimationComponent with CollisionCallbacks {
     required Vector2? size,
     required this.level,
     this.angleRote,
-    this.isLaser = false
+    this.laserHealth = 3,
+    this.isLaser = false,
+    this.durationSkill = 3
   }) : super(
     animation: animation, position:  position, size: size, angle: angleRote ?? pi / 2
-  );
+  ) {
+    if (isLaser) {
+      timer = Timer(durationSkill.toDouble(), onTick: (){
+        removeFromParent();
+      });
+    }
+  }
 
   @override
   void update(double dt) {
     super.update(dt);
-    position += direction * speed * dt;
+    if (!isLaser) {
+        position += direction * speed * dt;
+    } else {
+      timer?.update(dt);
+    }
     if (position.y < 0) {
       removeFromParent();
     }
   }
 
   @override
+  void onRemove() {
+    timer?.stop();
+    super.onRemove();
+  }
+
+  @override
   void onMount() {
     super.onMount();
     if (isLaser) {
-      final shape = RectangleHitbox.relative(Vector2(1,1), parentSize: size);
+      final shape = RectangleHitbox.relative(Vector2(1,.8), parentSize: size);
       add(shape);
+      timer?.start();
     } else {
       final shape = CircleHitbox.relative(
         0.4,
@@ -52,9 +74,17 @@ class Bullet extends SpriteAnimationComponent with CollisionCallbacks {
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-
-    // If the other Collidable is Enemy, remove this bullet.
     if (other is Enemy) {
+      if (isLaser) {
+        // timer = Timer(3, autoStart: false, onTick: (){
+        //   removeFromParent();
+        // });
+        // laserHealth--;
+        // if (laserHealth == 0) {
+        //   removeFromParent();
+        // }
+        return;
+      }
       removeFromParent();
     }
   }
